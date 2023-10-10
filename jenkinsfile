@@ -1,0 +1,22 @@
+pipeline {
+    agent any
+  environment {
+      tom_path = '/app/apache-tomcat-9.0.75/webapps/'
+  }
+  stages {
+      stage('Git Clone') {
+          steps {
+              git branch: 'main', credentialsId: 'git_cred', url: 'https://github.com/success-techy/java-app.git'
+          }
+      }
+      stage('Maven Build') {
+          steps {
+              sh'''
+              cd simple-war
+              /opt/maven/bin/mvn clean package
+              sudo cp -rf target/*war ${tom_path}
+              '''
+          }
+      }
+  }
+}
